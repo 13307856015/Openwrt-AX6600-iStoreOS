@@ -331,6 +331,12 @@ jobs:
 
           # 7. iStoreOS 首页（quickstart）+ iStore 商店 + Vantage 主题入选断言
           echo "--- 检查 iStoreOS 首页 / Vantage 主题集成包 ---"
+          echo ">>> package 目录:"
+          ls -d package/istoreos/* package/luci-app-store package/luci-theme-vantage 2>&1
+          echo ">>> .packageinfo 中的入口 (共 $(grep -c '^Package: ' tmp/.packageinfo 2>/dev/null) 个包):"
+          grep -E '^Package: (quickstart|quickstart-netpolicy|luci-app-quickstart|luci-app-store|luci-theme-vantage)$' tmp/.packageinfo 2>&1
+          echo ">>> .config 中相关行:"
+          grep -nE 'quickstart|luci-app-store|vantage' .config 2>&1 | head -20
           for PKG in quickstart quickstart-netpolicy luci-app-quickstart luci-app-store luci-lib-taskd luci-lib-xterm taskd luci-theme-vantage; do
             if grep -q "^CONFIG_PACKAGE_${PKG}=y" .config; then
               echo "  [PASS] ${PKG}: 已入选"
