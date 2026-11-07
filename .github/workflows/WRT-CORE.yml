@@ -337,6 +337,12 @@ jobs:
           grep -E '^Package: (quickstart|quickstart-netpolicy|luci-app-quickstart|luci-app-store|luci-theme-vantage)$' tmp/.packageinfo 2>&1 || true
           echo ">>> .config 中相关行:"
           grep -nE 'quickstart|luci-app-store|vantage' .config 2>&1 | head -20 || true
+          for DBG in luci-app-store luci-app-quickstart; do
+            echo ">>> .packageinfo stanza for ${DBG}:"
+            sed -n "/^Package: ${DBG}\$/,/^\$/p" tmp/.packageinfo 2>&1 | head -30 || true
+            echo ">>> kconfig stanza for ${DBG}:"
+            sed -n "/^config PACKAGE_${DBG}\$/,/^\$/p" tmp/.config-package.in 2>&1 | head -30 || true
+          done
           for PKG in quickstart quickstart-netpolicy luci-app-quickstart luci-app-store luci-lib-taskd luci-lib-xterm taskd luci-theme-vantage; do
             if grep -q "^CONFIG_PACKAGE_${PKG}=y" .config; then
               echo "  [PASS] ${PKG}: 已入选"
