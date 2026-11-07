@@ -80,6 +80,14 @@ fi
 
 # istoreos/istore 仓库把四个包放在 luci/ 子目录里，逐个取出来
 echo " "
+
+# 本仓库自带的分支包（package/istoreos/*）复制进构建树的 package/ 根目录
+if [ -n "$GITHUB_WORKSPACE" ] && [ -d "$GITHUB_WORKSPACE/package/istoreos" ]; then
+	cp -rf "$GITHUB_WORKSPACE/package/istoreos/." ./
+	echo "Copied local packages from package/istoreos:"
+	ls -1 ./quickstart ./quickstart-netpolicy ./luci-app-quickstart 2>/dev/null || true
+fi
+
 rm -rf ./.istore-src
 git clone --depth=1 --single-branch --branch main https://github.com/istoreos/istore.git ./.istore-src
 ISTORE_COMMIT=$(git -C ./.istore-src rev-parse --short HEAD 2>/dev/null || echo unknown)
