@@ -329,6 +329,23 @@ jobs:
             fi
           fi
 
+          # 7. iStoreOS 首页（quickstart）+ iStore 商店 + Vantage 主题入选断言
+          echo "--- 检查 iStoreOS 首页 / Vantage 主题集成包 ---"
+          for PKG in quickstart quickstart-netpolicy luci-app-quickstart luci-app-store luci-lib-taskd luci-lib-xterm taskd luci-theme-vantage; do
+            if grep -q "^CONFIG_PACKAGE_${PKG}=y" .config; then
+              echo "  [PASS] ${PKG}: 已入选"
+            else
+              echo "::error::断言失败: 集成包 ${PKG} 未入选 .config！"
+              FAIL=1
+            fi
+          done
+          if grep -q "/luci-static/vantage" ./feeds/luci/modules/luci-base/root/etc/config/luci 2>/dev/null; then
+            echo "  [PASS] 默认主题已切换为 Vantage"
+          else
+            echo "::error::断言失败: 默认主题不是 Vantage！"
+            FAIL=1
+          fi
+
           rm -f .config.seed
 
           if [[ $FAIL -ne 0 ]]; then
