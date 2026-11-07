@@ -1,0 +1,19 @@
+#!/bin/sh
+# First-boot defaults for the iStoreOS QuickStart homepage + Vantage theme.
+#
+# The upstream quickstart package only re-enables its service on upgrade, so a
+# freshly flashed image needs this to make the homepage work immediately.
+
+[ -x /usr/sbin/quickstart ] || exit 0
+
+/etc/init.d/startdhns enable >/dev/null 2>&1
+/etc/init.d/quickstart enable >/dev/null 2>&1
+/etc/init.d/quickstart start >/dev/null 2>&1
+
+# LuCI 默认主题切到 Vantage（仅在仍是 bootstrap 默认值时）
+if [ "$(uci -q get luci.main.mediaurlbase)" = "/luci-static/bootstrap" ]; then
+	uci -q set luci.main.mediaurlbase='/luci-static/vantage'
+	uci -q commit luci
+fi
+
+exit 0

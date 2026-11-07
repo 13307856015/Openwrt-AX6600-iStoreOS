@@ -73,6 +73,43 @@ if [[ "${WRT_PROFILE^^}" == "PLUS" ]]; then
 	UPDATE_PACKAGE "viking" "ones20250/packages" "main" "" "luci-app-timewol luci-app-wolplus luci-app-wolultra"
 fi
 
+# =========================================================
+# iStore 应用商店（iStoreOS 首页的插件依赖）+ Vantage 主题
+# PURE / PLUS 都启用
+# =========================================================
+
+# istoreos/istore 仓库把四个包放在 luci/ 子目录里，逐个取出来
+echo " "
+rm -rf ./.istore-src
+git clone --depth=1 --single-branch --branch main https://github.com/istoreos/istore.git ./.istore-src
+ISTORE_COMMIT=$(git -C ./.istore-src rev-parse --short HEAD 2>/dev/null || echo unknown)
+for PKG_DIR in luci-app-store luci-lib-taskd luci-lib-xterm taskd; do
+	rm -rf "./${PKG_DIR}"
+	if [ -d "./.istore-src/luci/${PKG_DIR}" ]; then
+		mv -f "./.istore-src/luci/${PKG_DIR}" "./${PKG_DIR}"
+		echo "Installed iStore package: ${PKG_DIR}"
+	else
+		echo "WARNING: ${PKG_DIR} not found in istoreos/istore"
+	fi
+done
+rm -rf ./.istore-src
+if [ -n "$GITHUB_WORKSPACE" ]; then
+	echo "iStore(luci-app-store) istoreos/istore main ${ISTORE_COMMIT}" >> "$GITHUB_WORKSPACE/package-versions.txt"
+fi
+
+# Vantage 主题：只取 luci-theme-vantage
+# （luci-app-vantage 仪表盘不装，登录后的首页交给 iStoreOS 的 quickstart）
+echo " "
+rm -rf ./.vantage-src
+git clone --depth=1 --single-branch --branch main https://github.com/anothaDev/luci-theme-vantage.git ./.vantage-src
+VANTAGE_COMMIT=$(git -C ./.vantage-src rev-parse --short HEAD 2>/dev/null || echo unknown)
+rm -rf ./luci-theme-vantage ./luci-app-vantage
+mv -f ./.vantage-src/luci-theme-vantage ./luci-theme-vantage
+rm -rf ./.vantage-src
+if [ -n "$GITHUB_WORKSPACE" ]; then
+	echo "luci-theme-vantage anothaDev/luci-theme-vantage main ${VANTAGE_COMMIT}" >> "$GITHUB_WORKSPACE/package-versions.txt"
+fi
+
 #UPDATE_PACKAGE "mosdns" "sbwml/luci-app-mosdns" "v5" "" "v2dat"
 
 #UPDATE_PACKAGE "luci-app-tailscale" "asvow/luci-app-tailscale" "main"

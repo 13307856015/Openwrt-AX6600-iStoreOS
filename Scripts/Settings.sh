@@ -100,3 +100,18 @@ if [ -f "$CONF_FILE" ]; then
 		fi
 	fi
 fi
+
+# =========================================================
+# 默认主题切换为 Vantage（luci-theme-vantage）
+# =========================================================
+LUCI_DEFAULT_CFG="./feeds/luci/modules/luci-base/root/etc/config/luci"
+if [ -f "$LUCI_DEFAULT_CFG" ]; then
+	sed -i "s|/luci-static/bootstrap|/luci-static/vantage|g" "$LUCI_DEFAULT_CFG"
+	if grep -q "/luci-static/vantage" "$LUCI_DEFAULT_CFG"; then
+		echo "Default LuCI theme set to Vantage."
+	else
+		echo "WARNING: default LuCI theme was NOT switched to Vantage!"
+	fi
+else
+	echo "WARNING: $LUCI_DEFAULT_CFG not found, cannot switch default theme."
+fi

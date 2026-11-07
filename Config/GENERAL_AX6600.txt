@@ -157,3 +157,23 @@ CONFIG_PACKAGE_luci-app-wireless-regdb=y
 #老优化，副作用大
 CONFIG_PACKAGE_skb_recycler=n
 
+# ================= iStoreOS 首页 + iStore 商店 + Vantage 主题 =================
+# iStore 应用商店（iStoreOS 首页的应用列表依赖它）
+CONFIG_PACKAGE_luci-app-store=y
+CONFIG_PACKAGE_luci-lib-taskd=y
+CONFIG_PACKAGE_luci-lib-xterm=y
+CONFIG_PACKAGE_taskd=y
+# iStoreOS 首页（quickstart 0.17.1-rc20261028，官方最新 alpha）
+CONFIG_PACKAGE_quickstart=y
+CONFIG_PACKAGE_quickstart-netpolicy=y
+CONFIG_PACKAGE_luci-app-quickstart=y
+# LuCI 主题：Vantage（登录后默认界面）
+CONFIG_PACKAGE_luci-theme-vantage=y
+# quickstart 运行所需的基础命令（缺失时首页部分卡片会报错）
+CONFIG_PACKAGE_bash=y
+CONFIG_PACKAGE_mdadm=y
+CONFIG_PACKAGE_smartmontools=y
+CONFIG_PACKAGE_shadow-utils=y
+CONFIG_PACKAGE_shadow-useradd=y
+CONFIG_PACKAGE_mount-utils=y
+
